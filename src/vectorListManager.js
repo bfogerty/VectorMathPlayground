@@ -4,11 +4,12 @@ import VectorRenderObject from "./vectorRenderObject.js";
 
 export default class VectorListManager
 {
-    constructor(scene) {
+    constructor(scene, codeEditor) {
 
         this.scene = scene;
         this.vectorObjectList = {};
         this.vectorNameArray = [];
+        this.codeEditor = codeEditor;
     }
 
     get(name)
@@ -40,6 +41,7 @@ export default class VectorListManager
 
         let vectorObj = this.vectorObjectList[finalName];
         if(vectorObj != null) {
+            this.codeEditor.removeVectorFromAutoCompletionList(vectorObj);
             vectorObj.destroy();
         }
         
@@ -95,6 +97,7 @@ export default class VectorListManager
         this.set(name, vectorObject);
 
         this.vectorNameArray.push(name);
+        this.codeEditor.insertVectorIntoAutoCompletionList(vectorObject);
     }
 
     create2(name, color, startPosition, endPosition, opts)
@@ -109,6 +112,7 @@ export default class VectorListManager
         this.set(name, vectorObject);
 
         this.vectorNameArray.push(name);
+        this.codeEditor.insertVectorIntoAutoCompletionList(vectorObject);
     }
 
     createFromDirectionAndMagnitude(name, color, direction, magnitude, opts)
@@ -128,5 +132,6 @@ export default class VectorListManager
         this.set(name, vectorObject);
 
         this.vectorNameArray.push(name);
+        this.codeEditor.insertVectorIntoAutoCompletionList(vectorObject);
     }
 }

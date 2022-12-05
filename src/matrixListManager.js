@@ -4,11 +4,12 @@ import MatrixRenderObject from "./matrixRenderObject";
 
 export default class MatrixListManager
 {
-    constructor(scene) {
+    constructor(scene, codeEditor) {
 
         this.scene = scene;
         this.matrixObjectList = {};
         this.matrixNameArray = [];
+        this.codeEditor = codeEditor;
     }
 
     get(name)
@@ -40,6 +41,7 @@ export default class MatrixListManager
 
         let matrixObj = this.matrixObjectList[finalName];
         if(matrixObj != null) {
+            this.codeEditor.removeMatrixFromAutoCompletionList(matrixObj);
             matrixObj.destroy();
         }
 
@@ -93,6 +95,7 @@ export default class MatrixListManager
         this.set(name, renderObject);
 
         this.matrixNameArray.push(name);
+        this.codeEditor.insertMatrixIntoAutoCompletionList(renderObject);
 
         //renderObject.show(false);
     }

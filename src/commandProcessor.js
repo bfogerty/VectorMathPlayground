@@ -19,6 +19,7 @@ export default class CommandProcessor {
         this.cmdMap = {};
         this.context = context;
         this.cmdHistory = [];
+        this.redirectOutputToConsole = false;
 
         this.registerCommands();
     }
@@ -227,7 +228,9 @@ export default class CommandProcessor {
             const cmdName = commands[i].cmdName;
             const cmdArgs = commands[i].cmdArgs;
 
-            this.executeCmd(cmdName, cmdArgs, true);
+            this.showCommandsInConsole(true);
+            this.executeCmd(cmdName, cmdArgs);
+            this.showCommandsInConsole(false);
         }
     }
 
@@ -243,7 +246,12 @@ export default class CommandProcessor {
         }
     }
 
-    executeCmd(cmdName, cmdArgs, fromExecuteCommandsMenu)
+    showCommandsInConsole(enabled)
+    {
+        this.redirectOutputToConsole = enabled;
+    }
+
+    executeCmd(cmdName, cmdArgs)
     {
         const cmd = this.cmdMap[cmdName];
         if(cmd == null)
@@ -253,7 +261,7 @@ export default class CommandProcessor {
         this.cmdHistory.push({"cmdName": cmdName, "cmdArgs":cmdArgs});
 
         const cmdProps = cmd["properties"];
-        if(fromExecuteCommandsMenu && cmdProps != null && cmdProps["outputResultToConsole"])
+        if(this.redirectOutputToConsole && cmdProps != null && cmdProps["outputResultToConsole"])
         {
             const args = [];
             for(let argName in cmdArgs) {

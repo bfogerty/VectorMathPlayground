@@ -18,7 +18,6 @@ body
 	overflow: hidden;
 }
 
-
 #scene_gui { position: absolute; top: 2px; left: 2px }
 #vector_gui { position: absolute; top: 2px; left: 200px }
 #vector_operations_gui { position: absolute; top: 2px; left: 200px }
@@ -29,3 +28,30 @@ div.terminal-pane {
 	overflow: hidden;
 }
 
+#editor {
+	margin-bottom: 64px;
+	margin-left : 0px;
+	width: 100%;
+	height: 200px;
+	background-color: white;
+	color: green;
+	position: fixed;
+	bottom: 0%;
+	overflow:scroll;
+}
+
+.runButton {
+	background-color: #4CAF50;
+	border: none;
+	color: white;
+	padding: 15px 32px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	margin: 4px 2px;
+	cursor: pointer;
+	position:fixed;
+
+	bottom:0%;
+}

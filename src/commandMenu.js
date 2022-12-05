@@ -27,6 +27,7 @@ export default class CommandMenu
         this.createExecuteCommandListSubMenu();
         this.createClearCommandHistorySubMenu();
         this.createCommandConsoleSubMenu();
+        this.createCodeEditorSubMenu();
     }
 
     open()
@@ -122,6 +123,25 @@ export default class CommandMenu
         };
 
         const folder = this.gui.addFolder("Console");
+        folder.add(params, 'open');
+        folder.add(params, 'close');
+        folder.close();
+    }
+
+    createCodeEditorSubMenu()
+    {
+        const menuInstance = this;
+
+        const params = {
+            open: function() {
+                menuInstance.context.codeEditor.open();
+            },
+            close: function() {
+                menuInstance.context.codeEditor.close();
+            }
+        };
+
+        const folder = this.gui.addFolder("Code Editor");
         folder.add(params, 'open');
         folder.add(params, 'close');
         folder.close();
