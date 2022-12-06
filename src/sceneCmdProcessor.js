@@ -6,6 +6,7 @@ import {GUI} from "lil-gui";
 import {vector} from "three/examples/jsm/nodes/core/NodeBuilder";
 import MathHelpers from './mathHelpers'
 import MatrixListManager from "./matrixListManager";
+import * as MathJS from 'mathjs'
 
 export default class SceneCommandProcessor {
 
@@ -23,6 +24,10 @@ export default class SceneCommandProcessor {
         this.registerListVectorsCommand();
         this.registerDumpVectorCommand();
         this.registerComputeVectorMagnitudeCommand();
+        this.registerGetVectorStartPointCommand();
+        this.registerGetVectorEndPointCommand();
+        this.registerComputeVectorNormalCommand();
+        this.registerComputeVectorFromOriginCommand();
         this.registerCreateVector();
         this.registerCreateVectorAtOrigin();
         this.registerCreateVectorFromDirectionAndMagnitude();
@@ -164,6 +169,138 @@ export default class SceneCommandProcessor {
                 const magnitude = inputVectorRenderObject.computeMagnitude();
 
                 return magnitude;
+            }
+        }
+
+        this.context.mathParser.set(cmdName, function (vector) {
+            const cmdArgs={"vector": vector};
+            return instance.context.cmdProcessor.executeCmd(cmdName, cmdArgs);
+        });
+
+        this.cmdMap[cmdName] = cmd;
+    }
+
+    registerGetVectorStartPointCommand()
+    {
+        const instance = this;
+
+        const cmdName = "getVectorStartPoint";
+        const cmdArgs = [
+        ];
+
+        const cmd = {
+            "args": cmdArgs,
+            "properties": {"availableInTerminal":true},
+            "description": "Returns an array representing the starting point of a vector.",
+            "exampleUsage": cmdName + "(\"vector\")",
+            "function": (context, cmdArgs) =>
+            {
+                const inputVectorRenderObject = context.vectorListManager.get(cmdArgs["vector"]);
+                const outputVector = inputVectorRenderObject.getStartPoint();
+
+                const array = new Array(outputVector.x, outputVector.y, outputVector.z);
+                const output = new MathJS.matrix(array);
+                return output;
+            }
+        }
+
+        this.context.mathParser.set(cmdName, function (vector) {
+            const cmdArgs={"vector": vector};
+            return instance.context.cmdProcessor.executeCmd(cmdName, cmdArgs);
+        });
+
+        this.cmdMap[cmdName] = cmd;
+    }
+
+    registerGetVectorEndPointCommand()
+    {
+        const instance = this;
+
+        const cmdName = "getVectorEndPoint";
+        const cmdArgs = [
+        ];
+
+        const cmd = {
+            "args": cmdArgs,
+            "properties": {"availableInTerminal":true},
+            "description": "Returns an array representing the ending point of a vector.",
+            "exampleUsage": cmdName + "(\"vector\")",
+            "function": (context, cmdArgs) =>
+            {
+                const inputVectorRenderObject = context.vectorListManager.get(cmdArgs["vector"]);
+                const outputVector = inputVectorRenderObject.getEndPoint();
+
+                const array = new Array(outputVector.x, outputVector.y, outputVector.z);
+                const output = new MathJS.matrix(array);
+                return output;
+            }
+        }
+
+        this.context.mathParser.set(cmdName, function (vector) {
+            const cmdArgs={"vector": vector};
+            return instance.context.cmdProcessor.executeCmd(cmdName, cmdArgs);
+        });
+
+        this.cmdMap[cmdName] = cmd;
+    }
+
+
+    registerComputeVectorNormalCommand()
+    {
+        const instance = this;
+
+        const cmdName = "computeVectorNormal";
+        const cmdArgs = [
+        ];
+
+        const cmd = {
+            "args": cmdArgs,
+            "properties": {"availableInTerminal":true},
+            "description": "Returns a vector representing the input vector normalized",
+            "exampleUsage": cmdName + "(\"vector\")",
+            "function": (context, cmdArgs) =>
+            {
+                const inputVectorRenderObject = context.vectorListManager.get(cmdArgs["vector"]);
+                const outputVector = inputVectorRenderObject.computeNormal();
+
+                const array = new Array(outputVector.x, outputVector.y, outputVector.z);
+                const output = new MathJS.matrix(array);
+                return output;
+            }
+        }
+
+        this.context.mathParser.set(cmdName, function (vector) {
+            const cmdArgs={"vector": vector};
+            return instance.context.cmdProcessor.executeCmd(cmdName, cmdArgs);
+        });
+
+        this.cmdMap[cmdName] = cmd;
+    }
+
+    registerComputeVectorFromOriginCommand()
+    {
+        const instance = this;
+
+        const cmdName = "computeVectorFromOrigin";
+        const cmdArgs = [
+        ];
+
+        const cmd = {
+            "args": cmdArgs,
+            "properties": {"availableInTerminal":true},
+            "description": "Returns a vector representing the input vector starting from the origin.",
+            "exampleUsage": cmdName + "(\"vector\")",
+            "function": (context, cmdArgs) =>
+            {
+                const inputVectorRenderObject = context.vectorListManager.get(cmdArgs["vector"]);
+                const start = inputVectorRenderObject.getStartPoint();
+                const end = inputVectorRenderObject.getEndPoint();
+                const outputVector = end;
+                outputVector.sub(start);
+
+                const array = new Array(outputVector.x, outputVector.y, outputVector.z);
+                const output = new MathJS.matrix(array);
+                return output;
             }
         }
 
