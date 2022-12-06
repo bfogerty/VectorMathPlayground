@@ -16,6 +16,7 @@ import VectorListManager from "./vectorListManager";
 import MatrixListManager from "./matrixListManager";
 import MatrixOperationMenu from "./matrixOperationMenu";
 import MatrixMenu from "./matrixMenu";
+import CodeEditor from "./codeEditor";
 
 export default class MenuController
 {
@@ -45,13 +46,12 @@ export default class MenuController
         stats: null,
         mathParser:null,
         commandTerminal:null,
+        codeEditor:null
     }
 
     constructor(params)
     {
         this.context.scene = params.scene;
-        this.context.vectorListManager = new VectorListManager(this.context.scene);
-        this.context.matrixListManager = new MatrixListManager(this.context.scene);
         this.context.renderer = params.renderer;
         this.context.camera = params.camera;
         this.context.orbitControls = params.orbitControls;
@@ -67,6 +67,10 @@ export default class MenuController
 
         this.context.cmdProcessor = new CommandProcessor(this.context);
         this.context.commandTerminal = new CommandTerminal(this.context);
+        this.context.codeEditor = new CodeEditor(this.context);
+
+        this.context.vectorListManager = new VectorListManager(this.context.scene, this.context.codeEditor);
+        this.context.matrixListManager = new MatrixListManager(this.context.scene, this.context.codeEditor);
 
         this.menuIsOpen = false;
 
@@ -334,6 +338,11 @@ export default class MenuController
         if(event.key == "`") {
             this.context.commandTerminal.toggle();
         }
+
+        if(event.key == "!") {
+            this.context.codeEditor.open();
+        }
+
         /*
         else if(event.key == "a") {
             const cmdArgs = {"resetCommandHistory": true};

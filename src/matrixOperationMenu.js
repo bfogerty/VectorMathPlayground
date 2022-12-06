@@ -64,6 +64,7 @@ export default class MatrixOperationMenu
         this.createScaleMatrixSubMenu();
         this.createInvertMatrixSubMenu();
         this.createTransposeMatrixSubMenu();
+        this.createExtractPositionVectorFromMatrixSubMenu();
     }
 
     createMultiplyMatricesSubMenu()
@@ -237,4 +238,23 @@ export default class MatrixOperationMenu
         folder.add(params, 'transpose');
         folder.close();
     }
+
+    createExtractPositionVectorFromMatrixSubMenu()
+    {
+        const menuInstance = this;
+
+        const params = {
+            matrix: null,
+            extract: function () {
+                const cmdArgs = {"matrix": params.matrix.name};
+                menuInstance.context.cmdProcessor.executeCmd("extractPositionVectorFromMatrix", cmdArgs);
+            }
+        };
+
+        const folder = this.gui.addFolder("Extract Position");
+        folder.add(params, 'matrix', this.context.matrixListManager.getList()).listen();
+        folder.add(params, 'extract');
+        folder.close();
+    }
+
 }

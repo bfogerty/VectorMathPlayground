@@ -10,6 +10,7 @@
     "@babel/preset-env": "^7.17.10",
     "@codemirror/lang-javascript": "^6.1.1",
     "@fancyapps/fancybox": "^3.5.7",
+    "@lezer/highlight": "^1.1.3",
     "babel-loader": "^8.2.5",
     "clean-webpack-plugin": "^4.0.0",
     "codemirror": "^6.0.1",

@@ -205,7 +205,7 @@ export default class VectorOperationCommandProcessor {
     {
         const instance = this;
 
-        const cmdName = "crossVectors";
+        const cmdName = "crossProduct";
         const cmdArgs = [
         ];
 
@@ -341,8 +341,8 @@ export default class VectorOperationCommandProcessor {
             }
         }
 
-        this.context.mathParser.set(cmdName, function (a,b) {
-            const cmdArgs={"vectorA":a, "normal":b};
+        this.context.mathParser.set(cmdName, function (vector, normal) {
+            const cmdArgs={"vector":vector, "normal":normal};
             instance.context.cmdProcessor.executeCmd(cmdName, cmdArgs);
         });
 

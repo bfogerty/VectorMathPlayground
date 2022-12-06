@@ -145,6 +145,41 @@ export default class CodeEditor {
         completionKeywords.splice(index,1);
     }
 
+    getDefaultSourceCode()
+    {
+        return "# Reset the scene and remove the default vectors\n" +
+            "resetScene(true);\n" +
+            "clearScene();\n" +
+            "\n" +
+            "# Create a rotation and translation matrix.\n" +
+            "# These will be used to rotate the man about the origin.\n" +
+            "createUpRotationMatrix(\"rMat\", true, -90);\n" +
+            "showMatrix(\"$\",false)\n" +
+            "createTranslationMatrix(\"tMat\", [0,0,2]);\n" +
+            "showMatrix(\"$\",false)\n" +
+            "\n" +
+            "# Create a man at the origin\n" +
+            "createVector2(\"man\", [0,0,1])\n" +
+            "setVectorRenderMode(\"$\",\"man\")\n" +
+            "\n" +
+            "# Left\n" +
+            "# Combine the rotation and translation matrices.\n" +
+            "multiplyMatrices(\"rMat\", \"tMat\");\n" +
+            "multiplyVectorByMatrix(\"man\",\"$\");\n" +
+            "\n" +
+            "# Rear\n" +
+            "multiplyMatrices(\"rMat\", \"$\");\n" +
+            "multiplyVectorByMatrix(\"man\",\"$\");\n" +
+            "\n" +
+            "# Right\n" +
+            "multiplyMatrices(\"rMat\", \"$\");\n" +
+            "multiplyVectorByMatrix(\"man\",\"$\");\n" +
+            "\n" +
+            "# Front\n" +
+            "multiplyMatrices(\"rMat\", \"$\");\n" +
+            "multiplyVectorByMatrix(\"man\",\"$\");"
+    }
+
     create()
     {
         const instance = this;
@@ -162,7 +197,7 @@ export default class CodeEditor {
         this.buildCommandAutoCompletion(completionKeywords);
 
         this.editorView = new EditorView({
-            doc: "",
+            doc: this.getDefaultSourceCode(),
             extensions: [basicSetup, autocompletion({override: [myCompletions]})],
             extraKeys: {"Ctrl-Space": "autocomplete"},
             lineNumbers: true,

@@ -29,6 +29,8 @@ export default class MatrixOperationCommandProcessor {
         this.registerScaleMatrix();
         this.registerInvertMatrix();
         this.registerTransposeMatrix();
+        this.registerExtractPositionVectorFromMatrix();
+        this.registerExtractVectorsFromMatrix();
     }
 
     registerMultiplyMatrices()
@@ -322,6 +324,114 @@ export default class MatrixOperationCommandProcessor {
 
                 const name = "Result" + context.vectorOperationCount++;
                 context.matrixListManager.create1(name, resultMatrix);
+                context.needsFullMenuRefresh = true;
+            }
+        }
+
+        this.context.mathParser.set(cmdName, function (matrix) {
+            const cmdArgs={"matrix":matrix};
+            instance.context.cmdProcessor.executeCmd(cmdName, cmdArgs);
+        });
+
+        this.cmdMap[cmdName] = cmd;
+    }
+
+    registerExtractPositionVectorFromMatrix()
+    {
+        const instance = this;
+
+        const cmdName = "extractPositionVectorFromMatrix";
+        const cmdArgs = [
+        ];
+
+        const cmd = {
+            "args": cmdArgs,
+            "properties": {"availableInTerminal":true},
+            "description": "Creates a vector at the position encoded within the input matrix.",
+            "exampleUsage": cmdName + "(\"matrix\")",
+            "function": (context, cmdArgs) =>
+            {
+                const inputMatrixRenderObject = context.matrixListManager.get(cmdArgs["matrix"]);
+
+                const startPosition = new THREE.Vector3();
+                startPosition.setFromMatrixColumn(inputMatrixRenderObject.matrix, 3);
+
+                const lookDirection = new THREE.Vector3();
+                lookDirection.setFromMatrixColumn(inputMatrixRenderObject.matrix, 2);
+                lookDirection.normalize();
+
+                const endPosition = startPosition.clone();
+                endPosition.add(lookDirection);
+
+                const opts = {
+                    renderMode:"waypoint"
+                }
+
+                const name = "Result" + context.vectorOperationCount++;
+                context.vectorListManager.create2(name, MathHelpers.getRandomColor(), startPosition, endPosition, opts);
+                context.needsFullMenuRefresh = true;
+            }
+        }
+
+        this.context.mathParser.set(cmdName, function (matrix) {
+            const cmdArgs={"matrix":matrix};
+            instance.context.cmdProcessor.executeCmd(cmdName, cmdArgs);
+        });
+
+        this.cmdMap[cmdName] = cmd;
+    }
+
+    registerExtractVectorsFromMatrix()
+    {
+        const instance = this;
+
+        const cmdName = "extractVectorsFromMatrix";
+        const cmdArgs = [
+        ];
+
+        const cmd = {
+            "args": cmdArgs,
+            "properties": {"availableInTerminal":true},
+            "description": "Creates 3 vectors representing the input matrix's up, left, and forward vectors.  The resulting vectors will be positioned based on the position encoded within the input matrix.",
+            "exampleUsage": cmdName + "(\"matrix\")",
+            "function": (context, cmdArgs) =>
+            {
+                const inputMatrixRenderObject = context.matrixListManager.get(cmdArgs["matrix"]);
+
+                const startPosition = new THREE.Vector3();
+                startPosition.setFromMatrixColumn(inputMatrixRenderObject.matrix, 3);
+
+                let vectorRenderObject = inputMatrixRenderObject.getVectorRenderObject(0);
+                let e = vectorRenderObject.getEndPoint();
+                e.sub(vectorRenderObject.getStartPoint());
+                let endPosition = startPosition.clone();
+                endPosition.add(e);
+                const upProps = [startPosition, endPosition]
+
+                vectorRenderObject = inputMatrixRenderObject.getVectorRenderObject(1);
+                e = vectorRenderObject.getEndPoint();
+                e.sub(vectorRenderObject.getStartPoint());
+                endPosition = startPosition.clone();
+                endPosition.add(e);
+                const leftProps = [startPosition, endPosition]
+
+                vectorRenderObject = inputMatrixRenderObject.getVectorRenderObject(2);
+                e = vectorRenderObject.getEndPoint();
+                e.sub(vectorRenderObject.getStartPoint());
+                endPosition = startPosition.clone();
+                endPosition.add(e);
+                const forwardProps = [startPosition, endPosition]
+
+
+                let name = "Result" + context.vectorOperationCount++;
+                context.vectorListManager.create2(name, 0xff0000, upProps[0], upProps[1]);
+
+                name = "Result" + context.vectorOperationCount++;
+                context.vectorListManager.create2(name, 0x00ff00, leftProps[0], leftProps[1]);
+
+                name = "Result" + context.vectorOperationCount++;
+                context.vectorListManager.create2(name, 0x0000ff, forwardProps[0], forwardProps[1]);
+
                 context.needsFullMenuRefresh = true;
             }
         }

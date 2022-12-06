@@ -22,12 +22,14 @@ export default class SceneCommandProcessor {
     {
         this.registerListVectorsCommand();
         this.registerDumpVectorCommand();
+        this.registerComputeVectorMagnitudeCommand();
         this.registerCreateVector();
         this.registerCreateVectorAtOrigin();
         this.registerCreateVectorFromDirectionAndMagnitude();
         this.registerDuplicateVector();
         this.registerCreateRandomVector();
         this.registerDestroyVector();
+        this.registerShowVector();
 
         this.registerListMatricesCommand();
         this.registerDumpMatrixCommand();
@@ -40,6 +42,7 @@ export default class SceneCommandProcessor {
         this.registerCreateScaleMatrix();
         this.registerCreateTranslationMatrix();
         this.registerDestroyMatrix();
+        this.registerShowMatrix();
 
         this.registerClearScene();
         this.registerResetScene();
@@ -131,6 +134,36 @@ export default class SceneCommandProcessor {
                     normalizedString;
 
                 return resultString;
+            }
+        }
+
+        this.context.mathParser.set(cmdName, function (vector) {
+            const cmdArgs={"vector": vector};
+            return instance.context.cmdProcessor.executeCmd(cmdName, cmdArgs);
+        });
+
+        this.cmdMap[cmdName] = cmd;
+    }
+
+    registerComputeVectorMagnitudeCommand()
+    {
+        const instance = this;
+
+        const cmdName = "computeVectorMagnitude";
+        const cmdArgs = [
+        ];
+
+        const cmd = {
+            "args": cmdArgs,
+            "properties": {"availableInTerminal":true},
+            "description": "Returns the magnitude or length of a vector.",
+            "exampleUsage": cmdName + "(\"vector\")",
+            "function": (context, cmdArgs) =>
+            {
+                const inputVectorRenderObject = context.vectorListManager.get(cmdArgs["vector"]);
+                const magnitude = inputVectorRenderObject.computeMagnitude();
+
+                return magnitude;
             }
         }
 
@@ -626,6 +659,80 @@ export default class SceneCommandProcessor {
 
         this.context.mathParser.set(cmdName, function (vectorName) {
             const cmdArgs={"vector":vectorName};
+            return instance.context.cmdProcessor.executeCmd(cmdName, cmdArgs);
+        });
+
+        this.cmdMap[cmdName] = cmd;
+    }
+
+    registerShowVector()
+    {
+        const instance = this;
+
+        const cmdName = "showVector";
+        const cmdArgs = [
+        ];
+
+        const cmd = {
+            "args": cmdArgs,
+            "properties": {"availableInTerminal":true},
+            "description": "Controls whether or not a vector is visible in the scene.",
+            "exampleUsage": cmdName + "(visible)",
+            "function": (context, cmdArgs) =>
+            {
+                if(cmdArgs["vector"] == null)
+                    return;
+
+                const visible = cmdArgs["visible"]
+
+                let vector = context.vectorListManager.get(cmdArgs["vector"]);
+                if(vector == null)
+                    return;
+
+                vector.show(visible)
+                context.needsFullMenuRefresh = true;
+            }
+        }
+
+        this.context.mathParser.set(cmdName, function (vectorName, visible) {
+            const cmdArgs={"vector":vectorName, "visible":visible};
+            return instance.context.cmdProcessor.executeCmd(cmdName, cmdArgs);
+        });
+
+        this.cmdMap[cmdName] = cmd;
+    }
+
+    registerShowMatrix()
+    {
+        const instance = this;
+
+        const cmdName = "showMatrix";
+        const cmdArgs = [
+        ];
+
+        const cmd = {
+            "args": cmdArgs,
+            "properties": {"availableInTerminal":true},
+            "description": "Controls whether or not a matrix is visible in the scene.",
+            "exampleUsage": cmdName + "(visible)",
+            "function": (context, cmdArgs) =>
+            {
+                if(cmdArgs["matrix"] == null)
+                    return;
+
+                const visible = cmdArgs["visible"]
+
+                let matrix = context.matrixListManager.get(cmdArgs["matrix"]);
+                if(matrix == null)
+                    return;
+
+                matrix.show(visible)
+                context.needsFullMenuRefresh = true;
+            }
+        }
+
+        this.context.mathParser.set(cmdName, function (matrixName, visible) {
+            const cmdArgs={"matrix":matrixName, "visible":visible};
             return instance.context.cmdProcessor.executeCmd(cmdName, cmdArgs);
         });
 

@@ -38,6 +38,7 @@ div.terminal-pane {
 	position: fixed;
 	bottom: 0%;
 	overflow:scroll;
+	font-size: 18px;
 }
 
 .runButton {
@@ -52,6 +53,5 @@ div.terminal-pane {
 	margin: 4px 2px;
 	cursor: pointer;
 	position:fixed;
-
 	bottom:0%;
 }

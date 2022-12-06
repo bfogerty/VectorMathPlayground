@@ -106,6 +106,14 @@ export default class MatrixRenderObject
         this.name = "";
     }
 
+    getVectorRenderObject(index)
+    {
+        if(index < 0 || index >= 3)
+            return null;
+
+        return this.vectorsInMatrix[index];
+    }
+
     show(visible)
     {
         this.visible = visible;
