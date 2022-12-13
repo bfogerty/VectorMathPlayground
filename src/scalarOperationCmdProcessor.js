@@ -26,7 +26,7 @@ export default class ScalarOperationCommandProcessor {
         this.registerComputeAngleBetweenVectors();
         this.registerConvertRadiansToDegrees();
         this.registerConvertDegreesToRadians();
-
+        this.registerComputeMatrixDeterminant();
     }
 
     registerComputeDistanceBetweenVectors()
@@ -190,6 +190,34 @@ export default class ScalarOperationCommandProcessor {
 
         this.context.mathParser.set(cmdName, function (angle) {
             const cmdArgs={"angle":angle};
+            return instance.context.cmdProcessor.executeCmd(cmdName, cmdArgs);
+        });
+
+        this.cmdMap[cmdName] = cmd;
+    }
+
+    registerComputeMatrixDeterminant()
+    {
+        const instance = this;
+
+        const cmdName = "computeMatrixDeterminant";
+        const cmdArgs = [
+        ];
+
+        const cmd = {
+            "args": cmdArgs,
+            "properties": {"availableInTerminal":true, "outputResultToConsole":true},
+            "description": "Returns the determinant of the input matrix.",
+            "exampleUsage": cmdName + "(\"matrixName\")",
+            "function": (context, cmdArgs) =>
+            {
+                const matrixRenderObject = context.matrixListManager.get(cmdArgs["matrix"]);
+                return matrixRenderObject.matrix.determinant();
+            }
+        }
+
+        this.context.mathParser.set(cmdName, function (matrix) {
+            const cmdArgs={"matrix":matrix};
             return instance.context.cmdProcessor.executeCmd(cmdName, cmdArgs);
         });
 

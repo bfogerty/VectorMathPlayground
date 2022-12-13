@@ -176,6 +176,11 @@ export default class VectorRenderObject
         return normal;
     }
 
+    getScale()
+    {
+        return this.scaleVector.clone();
+    }
+
     computeMagnitude()
     {
         const look = new Vector3();

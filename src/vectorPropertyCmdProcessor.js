@@ -46,6 +46,7 @@ export default class VectorPropertyCommandProcessor {
                 let newRenderMode = cmdArgs["renderMode"];
                 let newRenderText = cmdArgs["renderText"];
                 let newVisible = cmdArgs["visible"];
+                let newScaleVector = cmdArgs["scaleVector"];
 
                 if(oldVectorName == null)
                     return;
@@ -97,6 +98,9 @@ export default class VectorPropertyCommandProcessor {
                 if(newTextToRender == null)
                     newTextToRender = vector.textToRender;
 
+                if(newScaleVector == null)
+                    newScaleVector = vector.getScale();
+
                 if(newTextToRender == oldVectorName)
                     newTextToRender = newVectorName;
 
@@ -117,7 +121,8 @@ export default class VectorPropertyCommandProcessor {
                         visible:newVisible,
                         textToRender:newTextToRender,
                         basisVectorA:newBasisVectorA,
-                        basisVectorB:newBasisVectorB
+                        basisVectorB:newBasisVectorB,
+                        scaleVector: newScaleVector
                     });
 
                 this.context.needsFullMenuRefresh = true;

@@ -402,8 +402,8 @@ export default class VectorOperationCommandProcessor {
         const cmd = {
             "args": cmdArgs,
             "properties": {"availableInTerminal":true},
-            "description": "Creates a new vector which represents the translation of the input vector to the input (x,y,z) position.",
-            "exampleUsage": cmdName + "(vectorName, x, y, z)",
+            "description": "Creates a new vector which represents the translation of the input vector to the input [x,y,z] position.",
+            "exampleUsage": cmdName + "(vectorName, [x, y, z])",
             "function": (context, cmdArgs) =>
             {
                 const vector = context.vectorListManager.get(cmdArgs["vector"]);
@@ -434,8 +434,13 @@ export default class VectorOperationCommandProcessor {
             }
         }
 
-        this.context.mathParser.set(cmdName, function (a,x,y,z) {
-            const cmdArgs={"vector":a, "startX":x, "starty":y, "startZ":z};
+        this.context.mathParser.set(cmdName, function (a, position) {
+
+            const positionX = position._data[0];
+            const positionY = position._data[1];
+            const positionZ = position._data[2];
+
+            const cmdArgs={"vector":a, "startX":positionX, "startY":positionY, "startZ":positionZ};
             instance.context.cmdProcessor.executeCmd(cmdName, cmdArgs);
         });
 
@@ -646,14 +651,16 @@ export default class VectorOperationCommandProcessor {
                 startVector.applyMatrix4(matrixRenderObj.matrix);
                 endVector.applyMatrix4(matrixRenderObj.matrix);
 
+                const vectorScale = vectorRenderObj.getScale();
+
                 // Extract the scale from the matrix.
                 const xAxis = new THREE.Vector3();
                 const yAxis = new THREE.Vector3();
                 const zAxis = new THREE.Vector3();
                 matrixRenderObj.matrix.extractBasis(xAxis, yAxis, zAxis);
-                const xScale = xAxis.length();
-                const yScale = yAxis.length();
-                const zScale = zAxis.length();
+                const xScale = xAxis.length() * vectorScale.x;
+                const yScale = yAxis.length() * vectorScale.y;
+                const zScale = zAxis.length() * vectorScale.z;
 
                 const opts = {
                     "renderMode":renderMode,

@@ -64,6 +64,7 @@ export default class ScalarOperationMenu
         this.createAngleBetweenVectorsSubMenu();
         this.createRadiansToDegreesSubMenu();
         this.createDegreesToRadiansSubMenu();
+        this.createMatrixDeterminantSubMenu();
         this.createTrigFunctionsSubMenu();
         this.createExpressionSubMenu();
         //this.createCalculateAngleOfLeftAngleSubMenu();
@@ -229,6 +230,27 @@ export default class ScalarOperationMenu
         folder.add(params, 'radians');
         folder.add(params, 'convert');
         folder.add(params, 'degrees').listen();
+        folder.close();
+    }
+
+    createMatrixDeterminantSubMenu()
+    {
+        const menuInstance = this;
+
+        const params = {
+            matrix: null,
+            compute: function () {
+                const cmdArgs = {"matrix": params.matrix.name};
+                params.determinant = menuInstance.context.cmdProcessor.executeCmd("computeMatrixDeterminant", cmdArgs);
+            },
+
+            determinant:0,
+        };
+
+        const folder = this.gui.addFolder("Matrix Determinant");
+        folder.add(params, 'matrix', this.context.matrixListManager.getList()).listen();
+        folder.add(params, 'compute');
+        folder.add(params, 'determinant').listen();
         folder.close();
     }
 
