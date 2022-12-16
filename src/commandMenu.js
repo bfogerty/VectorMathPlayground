@@ -6,6 +6,7 @@ import VectorMenu from './vectorMenu'
 import VectorOperationsMenu from './vectorOperationMenu'
 import MathHelpers from './mathHelpers'
 import CommandTerminal from "./commandTerminal";
+import CodeEditorExamples from "./codeEditorExamples";
 
 
 export default class CommandMenu
@@ -144,6 +145,30 @@ export default class CommandMenu
         const folder = this.gui.addFolder("Code Editor");
         folder.add(params, 'open');
         folder.add(params, 'close');
+        folder.close();
+
+        this.createCodeEditorExamplesSubMenu(folder);
+    }
+
+    createCodeEditorExamplesSubMenu(parentGUI)
+    {
+        const menuInstance = this;
+        const codeEditor = menuInstance.context.codeEditor;
+
+        const params = {
+            rotateAboutOrigin: function() {
+                codeEditor.open();
+                codeEditor.setText(CodeEditorExamples.GetRotateAroundOriginExample());
+            },
+            manuallyReflectedVector: function() {
+                codeEditor.open();
+                codeEditor.setText(CodeEditorExamples.GetManuallyReflectedVector());
+            }
+        };
+
+        const folder = parentGUI.addFolder("Examples");
+        folder.add(params, 'rotateAboutOrigin').name("Rotate About Origin");
+        folder.add(params, 'manuallyReflectedVector').name("Manually Reflected Vector");
         folder.close();
     }
 }

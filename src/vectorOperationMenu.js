@@ -363,11 +363,11 @@ export default class VectorOperationMenu
             vectorB: null,
             execute: function () {
                 const cmdArgs = {"vectorA": params.vectorA.name, "vectorB": params.vectorB.name};
-                menuInstance.context.cmdProcessor.executeCmd("distanceBetweenVectors", cmdArgs);
+                menuInstance.context.cmdProcessor.executeCmd("drawDistanceBetweenVectors", cmdArgs);
             }
         };
 
-        const folder = this.gui.addFolder("Render Distance Between Vectors");
+        const folder = this.gui.addFolder("Draw Distance Between Vectors");
         folder.add(params, 'vectorA', this.context.vectorListManager.getList());
         folder.add(params, 'vectorB', this.context.vectorListManager.getList());
         folder.add(params, 'execute');
@@ -384,11 +384,11 @@ export default class VectorOperationMenu
             angleInDegrees: true,
             execute: function () {
                 const cmdArgs = {"vectorA": params.vectorA.name, "vectorB": params.vectorB.name, "angleInDegrees":params.angleInDegrees};
-                menuInstance.context.cmdProcessor.executeCmd("angleBetweenVectors", cmdArgs);
+                menuInstance.context.cmdProcessor.executeCmd("drawAngleBetweenVectors", cmdArgs);
             }
         };
 
-        const folder = this.gui.addFolder("Render Angle Between Vectors");
+        const folder = this.gui.addFolder("Draw Angle Between Vectors");
         folder.add(params, 'vectorA', this.context.vectorListManager.getList());
         folder.add(params, 'vectorB', this.context.vectorListManager.getList());
         folder.add(params, 'angleInDegrees').name("Angle In Degrees");

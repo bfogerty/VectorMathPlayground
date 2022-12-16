@@ -21,6 +21,8 @@ export default class VectorPropertyCommandProcessor {
         this.registerUpdateVector();
         this.registerRenameVector();
         this.registerSetVectorRenderMode();
+        this.registerSetVectorDisplayText();
+        this.registerShowVectorDisplayText();
     }
 
     registerUpdateVector()
@@ -190,6 +192,70 @@ export default class VectorPropertyCommandProcessor {
 
         this.context.mathParser.set(cmdName, function (vector, renderMode) {
             const cmdArgs={"vector":vector, "renderMode":renderMode};
+            instance.context.cmdProcessor.executeCmd(cmdName, cmdArgs);
+        });
+
+        this.cmdMap[cmdName] = cmd;
+    }
+
+    registerSetVectorDisplayText() {
+        const instance = this;
+
+        const cmdName = "setVectorDisplayText";
+        const cmdArgs = [
+        ];
+
+        const cmd = {
+            "args": cmdArgs,
+            "properties": {"availableInTerminal":true},
+            "description": "Sets a vector's display text.",
+            "exampleUsage": cmdName + "(vector, textToDisplay)",
+            "function": (context, cmdArgs) =>
+            {
+                const vectorName = cmdArgs["vector"];
+                const textToDisplay = cmdArgs["textToDisplay"];
+
+                const updateCmdArgs={"vector":vectorName, "renderText":true, "textToRender":textToDisplay};
+                instance.context.cmdProcessor.executeCmd("updateVector", updateCmdArgs);
+
+                this.context.needsFullMenuRefresh = true;
+            }
+        }
+
+        this.context.mathParser.set(cmdName, function (vector, textToDisplay) {
+            const cmdArgs={"vector":vector, "textToDisplay":textToDisplay};
+            instance.context.cmdProcessor.executeCmd(cmdName, cmdArgs);
+        });
+
+        this.cmdMap[cmdName] = cmd;
+    }
+
+    registerShowVectorDisplayText() {
+        const instance = this;
+
+        const cmdName = "showVectorDisplayText";
+        const cmdArgs = [
+        ];
+
+        const cmd = {
+            "args": cmdArgs,
+            "properties": {"availableInTerminal":true},
+            "description": "Controls whether or not the vector's display text will be draw in the scene.  The input parameter \"displayTextEnabled\" should be either true or false.",
+            "exampleUsage": cmdName + "(vector, displayTextEnabled)",
+            "function": (context, cmdArgs) =>
+            {
+                const vectorName = cmdArgs["vector"];
+                const displayTextEnabled = cmdArgs["displayTextEnabled"];
+
+                const updateCmdArgs={"vector":vectorName, "renderText":displayTextEnabled};
+                instance.context.cmdProcessor.executeCmd("updateVector", updateCmdArgs);
+
+                this.context.needsFullMenuRefresh = true;
+            }
+        }
+
+        this.context.mathParser.set(cmdName, function (vector, displayTextEnabled) {
+            const cmdArgs={"vector":vector, "displayTextEnabled":displayTextEnabled};
             instance.context.cmdProcessor.executeCmd(cmdName, cmdArgs);
         });
 

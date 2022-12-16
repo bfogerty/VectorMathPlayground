@@ -465,13 +465,29 @@ export default class VectorOperationCommandProcessor {
                 const from = context.vectorListManager.get(cmdArgs["from"]);
                 const to = context.vectorListManager.get(cmdArgs["to"]);
 
-                const resultStartPoint = MathHelpers.lerpVectors(from.getStartPoint(), to.getStartPoint(), 1.0);
+                let resultStartPoint = null;
+                let resultEndPoint = null;
 
-                const lookDir = from.getEndPoint();
-                lookDir.sub(from.getStartPoint());
+                if(from.isModel()) {
+                    resultStartPoint = MathHelpers.lerpVectors(from.getStartPoint(), to.getStartPoint(), 1.0);
 
-                const resultEndPoint = to.getStartPoint();
-                resultEndPoint.add(lookDir);
+                    const lookDir = from.getEndPoint();
+                    lookDir.sub(from.getStartPoint());
+
+                    resultEndPoint = to.getStartPoint();
+                    resultEndPoint.add(lookDir);
+                }
+                else
+                {
+                    const magnitude = from.computeMagnitude();
+                    const normal = from.computeNormal();
+                    const offsetVector = normal;
+                    offsetVector.multiplyScalar(magnitude);
+
+                    resultStartPoint = to.getEndPoint();
+                    resultEndPoint = resultStartPoint.clone();
+                    resultEndPoint.add(offsetVector);
+                }
 
                 const opts = {
                     "renderMode":from.renderMode,
@@ -685,7 +701,7 @@ export default class VectorOperationCommandProcessor {
     {
         const instance = this;
 
-        const cmdName = "distanceBetweenVectors";
+        const cmdName = "drawDistanceBetweenVectors";
         const cmdArgs = [
         ];
 
@@ -737,7 +753,7 @@ export default class VectorOperationCommandProcessor {
     {
         const instance = this;
 
-        const cmdName = "angleBetweenVectors";
+        const cmdName = "drawAngleBetweenVectors";
         const cmdArgs = [
         ];
 
@@ -789,8 +805,8 @@ export default class VectorOperationCommandProcessor {
             }
         }
 
-        this.context.mathParser.set(cmdName, function (a,b,t) {
-            const cmdArgs={"vectorA":a, "vectorB":b, "t":t};
+        this.context.mathParser.set(cmdName, function (a,b,angleInDegrees) {
+            const cmdArgs={"vectorA":a, "vectorB":b, "angleInDegrees":angleInDegrees};
             instance.context.cmdProcessor.executeCmd(cmdName, cmdArgs);
         });
 

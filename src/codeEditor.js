@@ -148,36 +148,7 @@ export default class CodeEditor {
     getDefaultSourceCode()
     {
         return "# Reset the scene and remove the default vectors\n" +
-            "resetScene(true);\n" +
-            "clearScene();\n" +
-            "\n" +
-            "# Create a rotation and translation matrix.\n" +
-            "# These will be used to rotate the man about the origin.\n" +
-            "createUpRotationMatrix(\"rMat\", true, -90);\n" +
-            "showMatrix(\"$\",false)\n" +
-            "createTranslationMatrix(\"tMat\", [0,0,2]);\n" +
-            "showMatrix(\"$\",false)\n" +
-            "\n" +
-            "# Create a man at the origin\n" +
-            "createVector2(\"man\", [0,0,1])\n" +
-            "setVectorRenderMode(\"$\",\"man\")\n" +
-            "\n" +
-            "# Left\n" +
-            "# Combine the rotation and translation matrices.\n" +
-            "multiplyMatrices(\"rMat\", \"tMat\");\n" +
-            "multiplyVectorByMatrix(\"man\",\"$\");\n" +
-            "\n" +
-            "# Rear\n" +
-            "multiplyMatrices(\"rMat\", \"$\");\n" +
-            "multiplyVectorByMatrix(\"man\",\"$\");\n" +
-            "\n" +
-            "# Right\n" +
-            "multiplyMatrices(\"rMat\", \"$\");\n" +
-            "multiplyVectorByMatrix(\"man\",\"$\");\n" +
-            "\n" +
-            "# Front\n" +
-            "multiplyMatrices(\"rMat\", \"$\");\n" +
-            "multiplyVectorByMatrix(\"man\",\"$\");"
+            "resetScene(true);\n# Create a vector in the middle of the forward and up vectors\naddVectors(\"forward\",\"up\");\n# Normalize the last vector created\nnormalizeVector(\"$\");\n";
     }
 
     create()
@@ -206,6 +177,16 @@ export default class CodeEditor {
         });
 
         this.openForDisplay = true;
+    }
+
+    setText(text)
+    {
+        if(this.editorView == null)
+            return;
+
+        this.editorView.dispatch({
+            changes: {from: 0, to: this.editorView.state.doc.length, insert: text}
+        })
     }
 
     open()
