@@ -708,8 +708,7 @@ export default class SceneCommandProcessor {
                 if(count <= 0)
                     return;
 
-                for(let i = 0; i < count; ++i)
-                {
+                for(let i = 0; i < count; ++i) {
                     const name = "Random Vector" + context.randomVectorCount++;
 
                     const renderText = false;
@@ -719,8 +718,8 @@ export default class SceneCommandProcessor {
 
                     // https://mathinsight.org/spherical_coordinates
                     const radius = maxLength * 0.5;
-                    const theta = MathHelpers.lerp(0, 2*Math.PI, Math.random());
-                    const phi = MathHelpers.lerp(0, 2*Math.PI, Math.random());
+                    const theta = MathHelpers.lerp(0, 2 * Math.PI, Math.random());
+                    const phi = MathHelpers.lerp(0, 2 * Math.PI, Math.random());
                     const distance = Math.sqrt(MathHelpers.lerp(0, radius, Math.random()));
 
                     let endX = distance * Math.sin(phi) * Math.cos(theta);
@@ -729,16 +728,37 @@ export default class SceneCommandProcessor {
 
                     const v = new THREE.Vector3(endX, endY, endZ);
                     v.normalize();
+                    const normalizedVector = v.clone();
 
-                    if(!normalize)
-                        v.multiplyScalar(Math.random()*maxLength);
+                    if (!normalize)
+                        v.multiplyScalar(Math.random() * maxLength);
 
                     endX = v.x;
                     endY = v.y;
                     endZ = v.z;
 
                     const color = MathHelpers.getRandomColor();
+                    let isModel = (renderMode == "vector" || renderMode == "line") ? false : true;
+                    if (isModel) {
 
+                        const ox = MathHelpers.lerp(-1, 1, Math.random());
+                        const oy = MathHelpers.lerp(-1, 1, Math.random());
+                        const oz = MathHelpers.lerp(-1, 1, Math.random());
+                        let offsetFromOrigin = new Vector3(ox,oy,oz);
+                        offsetFromOrigin.normalize();
+                        offsetFromOrigin = offsetFromOrigin.multiplyScalar(MathHelpers.lerp(0, maxLength, Math.random()));
+
+                        context.vectorListManager.create2(
+                            name,
+                            color,
+                            offsetFromOrigin,
+                            new THREE.Vector3(endX, endY, endZ),
+                            {
+                                renderText: renderText,
+                                fontAsset: this.context.assets["fonts"]["defaultFont"],
+                                renderMode: renderMode
+                            });
+                    } else {
                     context.vectorListManager.create2(
                         name,
                         color,
@@ -746,9 +766,10 @@ export default class SceneCommandProcessor {
                         new THREE.Vector3(endX, endY, endZ),
                         {
                             renderText: renderText,
-                            fontAsset:this.context.assets["fonts"]["defaultFont"],
+                            fontAsset: this.context.assets["fonts"]["defaultFont"],
                             renderMode: renderMode
                         });
+                    }
 
                     context.needsFullMenuRefresh = true;
                 }

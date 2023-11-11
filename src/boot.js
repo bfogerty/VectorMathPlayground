@@ -114,8 +114,8 @@ for(let resourceURL in resourceList)
 }
 
 const sizes = {
-    width: window.innerWidth,
-    height: window.innerHeight
+    width: window.innerWidth * window.devicePixelRatio,
+    height: window.innerHeight * window.devicePixelRatio
 };
 
 let application = null;
